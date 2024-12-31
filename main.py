@@ -125,7 +125,7 @@ def save_markdown(image: Image, md_filepath: str) -> None:
 
 if __name__ == "__main__":
     image = get_last_image_info()
-    base_dir = os.path.join("images", image.Year, image.Month)
+    base_dir = os.path.join("images", image.Year, image.Month, image.Day)
     # 保存图片信息
     save_image_info(image, base_dir)
     # 保存4K图片
@@ -137,5 +137,7 @@ if __name__ == "__main__":
     # 保存1K图片
     url1k = image.UrlBase + "&w=1920&h=1080"
     save_image(url1k, os.path.join(base_dir, image.Date + "_1k.jpg"))
-    # 保存markdown
+    # 保存当日readme
+    save_markdown(image, os.path.join(base_dir,"README.md"))
+    # 保存readme
     save_markdown(image, "./README.md")
