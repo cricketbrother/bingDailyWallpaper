@@ -1,4 +1,4 @@
-name: Python application
+name: Get Bing Daily Wallpaper
 
 on:
     schedule:
