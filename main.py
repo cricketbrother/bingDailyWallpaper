@@ -119,7 +119,7 @@ def save_markdown(image: Image, md_filepath: str) -> None:
             f'![]({image.UrlBase} "{image.Copyright}")\n\n'
             f"{image.Title}\n\n"
             f"{image.Description}\n\n"
-            f"{image.Headline}\n\n"
+            f"{image.MainText}\n\n"
         )
 
 
