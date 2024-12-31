@@ -102,6 +102,27 @@ def save_image(url: str, image_filepath: str) -> None:
             f.write(resp.content)
 
 
+def save_markdown(image: Image, md_filepath: str) -> None:
+    """
+    保存markdown
+
+    参数:
+        image: Image
+        md_filepath: str
+    返回: None
+    """
+    os.makedirs(os.path.dirname(md_filepath), exist_ok=True)
+    with open(md_filepath, "w", encoding="utf-8") as f:
+        f.write(
+            f"# {image.Headline}\n\n"
+            f"{image.Date}\n\n"
+            f'![]({image.UrlBase} "{image.Copyright}")\n\n'
+            f"{image.Title}\n\n"
+            f"{image.Description}\n\n"
+            f"{image.Headline}\n\n"
+        )
+
+
 if __name__ == "__main__":
     image = get_last_image_info()
     base_dir = os.path.join("images", image.Year, image.Month)
@@ -116,3 +137,5 @@ if __name__ == "__main__":
     # 保存1K图片
     url1k = image.UrlBase + "&w=1920&h=1080"
     save_image(url1k, os.path.join(base_dir, image.Date + "_1k.jpg"))
+    # 保存markdown
+    save_markdown(image, "./README.md")
