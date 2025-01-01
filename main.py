@@ -81,6 +81,27 @@ def save_image_info(image: Image, dst: str) -> None:
         json.dump(image.json(), f, indent=2, ensure_ascii=False)
 
 
+def add_image_info(image: Image, dst: str) -> None:
+    """
+    追加保存图片信息
+
+    参数:
+        image: Image
+        dst: str
+    返回: None
+    """
+    if os.path.exists(dst):
+        with open(dst, "r", encoding="utf-8") as f:
+            tmp = json.load(f)
+    else:
+        tmp = []
+
+    tmp = [image.json()] + tmp
+
+    with open(dst, "w", encoding="utf-8") as f:
+        json.dump(tmp, f, indent=2, ensure_ascii=False)
+
+
 def save_image(url: str, image_filepath: str) -> None:
     """
     保存图片
@@ -126,18 +147,34 @@ def save_markdown(image: Image, md_filepath: str) -> None:
 if __name__ == "__main__":
     image = get_last_image_info()
     base_dir = os.path.join("images", image.Year, image.Month, image.Day)
-    # 保存图片信息
+
+    # 保存当日图片信息
     save_image_info(image, base_dir)
-    # 保存4K图片
+    # 保存当日4K图片
     url4k = image.UrlBase + "&w=3840&h=2160"
     save_image(url4k, os.path.join(base_dir, image.Date + "_4k.jpg"))
-    # 保存2K图片
+    # 保存当日2K图片
     url2k = image.UrlBase + "&w=2560&h=1440"
     save_image(url2k, os.path.join(base_dir, image.Date + "_2k.jpg"))
-    # 保存1K图片
+    # 保存当日1K图片
     url1k = image.UrlBase + "&w=1920&h=1080"
     save_image(url1k, os.path.join(base_dir, image.Date + "_1k.jpg"))
     # 保存当日readme
-    save_markdown(image, os.path.join(base_dir,"README.md"))
+    save_markdown(image, os.path.join(base_dir, "README.md"))
+
     # 保存readme
     save_markdown(image, "./README.md")
+
+    # 追加保存当月图片信息
+    add_image_info(
+        image,
+        os.path.join(
+            "images", image.Year, image.Month, f"{image.Year}-{image.Month}.json"
+        ),
+    )
+
+    # 追加保存当年图片信息
+    add_image_info(
+        image,
+        os.path.join("images", image.Year, f"{image.Year}.json"),
+    )
