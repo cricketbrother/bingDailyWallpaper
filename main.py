@@ -33,9 +33,12 @@ class Image:
         }
 
 
-def get_last_image_info() -> Image:
+def get_image_info(n=0) -> Image:
     """
-    获取上一张图片的信息
+    获取图片的信息, 默认为最新
+
+    参数:
+        n: int 0为最新, 1为前一天, 2为前两天, 以此类推
 
     返回: Image
     """
@@ -46,7 +49,7 @@ def get_last_image_info() -> Image:
         },
     )
     if resp.status_code == 200 and resp.json().get("MediaContents"):
-        last_media = resp.json().get("MediaContents")[0]
+        last_media = resp.json().get("MediaContents")[n]
         image = Image()
         date = datetime.strptime(last_media["FullDateString"], "%Y %m月 %d")
         image.Date = date.strftime("%Y-%m-%d")
@@ -66,7 +69,7 @@ def get_last_image_info() -> Image:
         return None
 
 
-def save_image_info(image: Image, dst: str) -> None:
+def save_image_info(image: Image, json_filepath: str) -> None:
     """
     保存图片信息
 
@@ -75,13 +78,12 @@ def save_image_info(image: Image, dst: str) -> None:
         dst: str
     返回: None
     """
-    os.makedirs(dst, exist_ok=True)
-    json_filepath = os.path.join(dst, image.Date + ".json")
+    os.makedirs(os.path.dirname(json_filepath), exist_ok=True)
     with open(json_filepath, "w", encoding="utf-8") as f:
         json.dump(image.json(), f, indent=2, ensure_ascii=False)
 
 
-def add_image_info(image: Image, dst: str) -> None:
+def add_image_info(image: Image, json_filepath: str) -> None:
     """
     追加保存图片信息
 
@@ -90,15 +92,16 @@ def add_image_info(image: Image, dst: str) -> None:
         dst: str
     返回: None
     """
-    if os.path.exists(dst):
-        with open(dst, "r", encoding="utf-8") as f:
+    if os.path.exists(json_filepath):
+        with open(json_filepath, "r", encoding="utf-8") as f:
             tmp = json.load(f)
     else:
+        os.makedirs(os.path.dirname(json_filepath), exist_ok=True)
         tmp = []
 
     tmp = [image.json()] + tmp
 
-    with open(dst, "w", encoding="utf-8") as f:
+    with open(json_filepath, "w", encoding="utf-8") as f:
         json.dump(tmp, f, indent=2, ensure_ascii=False)
 
 
@@ -145,11 +148,20 @@ def save_markdown(image: Image, md_filepath: str) -> None:
 
 
 if __name__ == "__main__":
-    image = get_last_image_info()
+    image = get_image_info(n=1)
     base_dir = os.path.join("images", image.Year, image.Month, image.Day)
 
     # 保存当日图片信息
-    save_image_info(image, base_dir)
+    save_image_info(
+        image,
+        os.path.join(
+            "images",
+            image.Year,
+            image.Month,
+            image.Day,
+            f"{image.Year}-{image.Month}-{image.Day}.json",
+        ),
+    )
     # 保存当日4K图片
     url4k = image.UrlBase + "&w=3840&h=2160"
     save_image(url4k, os.path.join(base_dir, image.Date + "_4k.jpg"))
