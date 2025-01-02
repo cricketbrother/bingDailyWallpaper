@@ -148,7 +148,7 @@ def save_markdown(image: Image, md_filepath: str) -> None:
 
 
 if __name__ == "__main__":
-    image = get_image_info(n=1)
+    image = get_image_info(n=0)
     base_dir = os.path.join("images", image.Year, image.Month, image.Day)
 
     # 保存当日图片信息
