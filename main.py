@@ -38,7 +38,7 @@ def get_image_info(n=0) -> Image:
     获取图片的信息, 默认为最新
 
     参数:
-        n: int 0为最新, 1为前一天, 2为前两天, 以此类推
+        n: int 0为最新, 1为前一天, 2为前两天, 以此类推, 最大值为6
 
     返回: Image
     """
@@ -48,6 +48,9 @@ def get_image_info(n=0) -> Image:
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
         },
     )
+
+    n = max(0, min(n, 6))
+    
     if resp.status_code == 200 and resp.json().get("MediaContents"):
         last_media = resp.json().get("MediaContents")[n]
         image = Image()
