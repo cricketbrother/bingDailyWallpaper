@@ -1,4 +1,4 @@
-name: Get Bing Daily Wallpaper
+name: 获取必应每日壁纸
 
 on:
   schedule:
@@ -9,24 +9,28 @@ permissions:
   contents: write
 
 jobs:
-  build:
-
+  get_bing_daily_wallpaper:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.13
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 配置Python环境
       uses: actions/setup-python@v5
       with:
         python-version: "3.13"
-    - name: Install dependencies
+
+    - name: 安装依赖
       run: |
         python -m pip install --upgrade pip
         pip install requests
-    - name: Run
+
+    - name: 运行脚本
       run: |
         python main.py
-    - name: Git commit and push
+
+    - name: 提交代码
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
