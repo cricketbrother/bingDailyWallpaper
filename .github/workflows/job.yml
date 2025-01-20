@@ -10,14 +10,14 @@ permissions:
 
 jobs:
   get_bing_daily_wallpaper:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: 检出代码
-      uses: actions/checkout@v4
+      uses: actions/checkout@main
 
     - name: 配置Python环境
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@main
       with:
         python-version: "3.13"
 
